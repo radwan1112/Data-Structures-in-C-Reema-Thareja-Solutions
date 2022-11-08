@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 
 int main(){
     char alphabit;
@@ -28,7 +29,12 @@ int main(){
             printf("%c is a vowel", alphabit);
             break;
         default:
-            printf("%c is not  a vowel", alphabit);
+            if(isalpha(alphabit)){
+                printf("%c is not  a vowel", alphabit);
+            }
+            else{
+                printf("Please Enter an English Alphabit");
+            }
     }
 
     return 0;
