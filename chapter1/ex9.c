@@ -26,5 +26,4 @@ int main(){
     ptr2 = &num2;
 
     printf("The total is: %d", add(ptr1, ptr2, &total));
-
 }
