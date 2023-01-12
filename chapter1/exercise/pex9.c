@@ -57,7 +57,7 @@ int main()
                 printf("%0.2lf USD\n\n", total);
                 printf("_______________________________________________________\n");
 
-                printf("Here is your Bill, to confirm purchase type Y/y or N/n to cancel the purchase: \n");
+                printf("Here is your Bill, to confirm purchase type Y/y or type N/n to cancel the purchase: \n");
                 scanf(" %c", &confirm_purchase);
                 if(confirm_purchase == 'y' || confirm_purchase == 'Y')
                 {
