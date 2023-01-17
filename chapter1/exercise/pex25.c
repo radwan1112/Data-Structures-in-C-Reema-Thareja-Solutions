@@ -18,7 +18,7 @@ int main(){
 
     calc_area(base, height, &area);
 
-    printf("Area of triangle : %.2f", area);
+    printf("Area of Triangle : %.2f", area);
 
     return 0;
 }
