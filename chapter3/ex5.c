@@ -48,7 +48,6 @@ int main()
         {
             full_n = concat(full_n, arr[k]);
         }
-
     }
 
     printf("Full number is: %d", full_n);
