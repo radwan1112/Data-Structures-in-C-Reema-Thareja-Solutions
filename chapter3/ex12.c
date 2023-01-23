@@ -28,7 +28,6 @@ void sort_array(int *arr[], int n)
             }
         }
     }
-
 }
 
 void print_array(int arr[], int n)
