@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 int main()
 {
@@ -17,8 +16,6 @@ int main()
     int arr2[n2];
     int arr3[n3];
     srand(time(0));
-    int temp, number, pos;
-    bool isvalid;
 
     printf("\nGenerating first array... \n");
     //fill the first array with random numbers
