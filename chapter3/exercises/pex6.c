@@ -10,7 +10,6 @@ void read(int *arr, int size)
         for(j = 0; j < size; j++)
         {
             printf("arr[%d][%d] = ", i, j);
-            scanf(" %d", &arr[i * size + j]);
         }
     }
 }
