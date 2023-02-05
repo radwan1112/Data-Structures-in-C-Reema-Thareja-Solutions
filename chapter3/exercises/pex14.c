@@ -44,6 +44,52 @@ void print_mat(int *matrix, int rows, int cols)
     }
 }
 
+void transpose_pro()
+{
+    int rows, cols;
+    int i, j;
+    printf("\n--Matrix Dimensions--\n\n");
+    printf("Enter Matrix number of rows: ");
+    scanf(" %d", &rows);
+    printf("Enter Matrix number of columns: ");
+    scanf(" %d", &cols);
+    int matrix[rows][cols];
+    int matrix_r[cols][rows];
+    int answer;
+    printf("\n--Choose how to fill the matrix--\n");
+    printf("\n1. Automatically Generate Matrix\n");
+    printf("2. Manually Enter Matrix Elements\n\n");
+    printf("Enter: ");
+    scanf(" %d", &answer);
+
+    if(answer == 1)
+    {
+        auto_fill(matrix, rows, cols);
+    }
+    else
+    {
+        printf("Enter First matrix elements\n\n");
+        fill_matrix(matrix, rows, cols);
+    }
+
+
+    printf("\nTranspose of Matrix = \n\n");
+    print_mat(matrix, rows, cols);
+    printf("\n   =\n\n");
+
+    for(i = 0; i < rows; i++)
+    {
+        for(j = 0; j < cols; j++)
+        {
+            matrix_r[j][i] = matrix[i][j];
+        }
+    }
+
+    print_mat(matrix_r, cols, rows);
+
+
+}
+
 void product_pro()
 {
 
@@ -231,9 +277,8 @@ int main()
         }
         else
         {
-
+            transpose_pro();
         }
-
     }
     while(repeat());
 
