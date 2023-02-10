@@ -18,7 +18,7 @@ void fill_array(float arr[], int len)
     int i;
     for(i = 0; i < len; i++)
     {
-        printf("Array[%2.5f]: ", i);
+        printf("Array[%d]: ", i);
         scanf(" %f", &arr[i]);
     }
 }
@@ -50,21 +50,32 @@ float *insert_element(float *arr, int len)
     printf("Enter the new element you wish to insert: ");
     scanf(" %f", &new_element);
 
-    printf("Choose an index between (0 ~ %d)", new_len - 1);
+    printf("Choose an index between (0 ~ %d): ", new_len - 1);
     int ret = scanf(" %d", &pos);
     while(ret == 0 || pos < 0 || pos > new_len - 1)
     {
-        printf("Choose an index between (0 ~ %d)", new_len - 1);
+        printf("Choose an index between (0 ~ %d): ", new_len - 1);
         scanf(" %d", &pos);
     }
 
-    float *new_array = (float*)malloc(new_len * sizeof(float));
+    arr = realloc(arr, new_len * sizeof(float));
 
     int i, j;
-    for(i = )
 
-
+    //shift the array elements
+    for(i = len; i >= pos; i--)
+    {
+        if(i == pos)
+        {
+            arr[i] = new_element;
+        }
+        else
+        {
+            arr[i] = arr[i - 1];
+        }
     }
+
+}
 
 int main()
 {
@@ -103,16 +114,18 @@ int main()
         if(reply == 'y' || reply == 'Y')
         {
             insert_element(arr, len);
+            len++;
+            print_array(arr, len);
         }
         else
         {
-            printf("Here is your final array Have a good day");
-            print_array();
+            printf("\nHere is your final array Have a good day\n");
+            print_array(arr, len);
         }
     }
-    while(reply == 'y' || reply == 'Y')
+    while(reply == 'y' || reply == 'Y');
+    free(arr);
 
 
-
-        return 0;
+    return 0;
 }
