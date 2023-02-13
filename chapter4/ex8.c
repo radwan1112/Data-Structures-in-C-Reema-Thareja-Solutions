@@ -2,7 +2,6 @@
 
 int main()
 {
-
     printf("---Delete substring from a text---\n\n");
     printf("Enter some text: ");
     char text[100];
