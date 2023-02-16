@@ -6,25 +6,35 @@ int cmpstr(char str1[], char str2[], int n)
 {
     int i = 0;
 
-    if(str1[i] == '\0' && str2[i] == '\0')
+    while(i < n)
     {
-        return 0;
-    }
-
-    for (i = 0; i < n; i++)
-    {
-        if (tolower(str1[i]) != tolower(str2[i]))
+        if(str1[i] == '\0' || str2[i] == '\0')
         {
-            if(str1[i] == '\0' || str2 == '\0')
+            if(str1[i] == '\0' && str2[i] != '\0')
             {
-
+                return 0 - tolower(str2[i]);
+            }
+            else if(str2[i] == '\0' && str1[i] != '\0')
+            {
+                return tolower(str1[i]) - 0;
             }
             else
+            {
+                break;
+            }
+        }
+        else
+        {
+            if(tolower(str1[i]) != tolower(str2[i]))
             {
                 return tolower(str1[i]) - tolower(str2[i]);
             }
         }
+        i++;
     }
+
+
+
 
     return 0;
 
