@@ -2,7 +2,6 @@
 
 int main()
 {
-
     struct name
     {
         char firstname[100];
