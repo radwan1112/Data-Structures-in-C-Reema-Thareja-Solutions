@@ -6,9 +6,6 @@
 #include <string.h>
 #include <ctype.h>
 
-//#define MIN(x,y) ((x) < (y) ? (x) : (y))
-//int d[300][300];
-
 int num_of_studs = 1000;
 
 struct fullname
@@ -243,6 +240,7 @@ void search_by_name(struct student *ptr_stud)
     }
 
     printf("\nList of Similar Results: \n\n");
+    printf("  No. | Student No. | FirstName - MiddleName - LastName| Birthdate | Average\n\n");
 
     int j = 0;
     int num = 0;
@@ -254,7 +252,7 @@ void search_by_name(struct student *ptr_stud)
         {
             if(ptr_stud[j].name.jaro_dist >= i)
             {
-                printf("%2d. %s %s %s\n", num + 1, ptr_stud[j].name.first_name, ptr_stud[j].name.middle_name, ptr_stud[j].name.last_name);
+                printf("%4d. | %11d | %10s %10s %10s | %2d/%2d/%4d | %3.2f (%c)\n", num + 1, ptr_stud[j].roll_no, ptr_stud[j].name.first_name, ptr_stud[j].name.middle_name, ptr_stud[j].name.last_name, ptr_stud[j].birthday.day, ptr_stud[j].birthday.month, ptr_stud[j].birthday.year, ptr_stud[j].average_grade, ptr_stud[j].overall_grade);
                 keys[num] = ptr_stud[j].id;
                 num++;
             }
@@ -282,6 +280,191 @@ void search_by_name(struct student *ptr_stud)
             printf("\nSelect the student to view his/her record: ");
             int input_count = scanf(" %d", &option);
             if (input_count != 1 || (option < 1 || option > num_items))
+            {
+                invalid = true;
+                scanf("%*[^\n]"); // clear input buffer
+                printf("\n invalid input\n");
+            }
+            else
+            {
+                option--;
+                display_record(ptr_stud[keys[option]]);
+                invalid = false;
+            }
+        }
+        while(invalid);
+    }
+}
+
+void search_by_number(struct student *ptr_stud)
+{
+
+    printf("\nEnter student number: ");
+    int st_num;
+    scanf(" %d", &st_num);
+    getchar();
+
+    printf("\nList of Similar Results: \n\n");
+    int key;
+    int num = 0;
+    int found = false;
+    printf("  No. | Student No. | FirstName - MiddleName - LastName| Birthdate | Average\n\n");
+    for(int i = 0; i < num_of_studs; i++)
+    {
+        if(ptr_stud[i].roll_no == st_num)
+        {
+            printf("%4d. | %11d | %10s %10s %10s | %2d/%2d/%4d | %3.2f (%c)\n", num + 1, ptr_stud[i].roll_no, ptr_stud[i].name.first_name, ptr_stud[i].name.middle_name, ptr_stud[i].name.last_name, ptr_stud[i].birthday.day, ptr_stud[i].birthday.month, ptr_stud[i].birthday.year, ptr_stud[i].average_grade, ptr_stud[i].overall_grade);
+            key = ptr_stud[i].id;
+            found = true;
+            num++;
+            break;
+        }
+    }
+
+    if(found)
+    {
+        int option;
+        bool invalid;
+        do
+        {
+            printf("\nSelect the student to view his/her record: ");
+            int input_count = scanf(" %d", &option);
+            if (input_count != 1 || (option < 1 || option > 1))
+            {
+                invalid = true;
+                scanf("%*[^\n]"); // clear input buffer
+                printf("\n invalid input\n");
+            }
+            else
+            {
+                option--;
+                display_record(ptr_stud[key]);
+                invalid = false;
+            }
+        }
+        while(invalid);
+    }
+    else
+    {
+        printf("\n No Matches Found \n");
+    }
+}
+
+void show_all(struct student *ptr_stud)
+{
+
+    printf("\nList of Similar Results: \n\n");
+    int num_items = num_of_studs;
+    int keys[num_items];
+    printf("  No. | Student No. | FirstName - MiddleName - LastName| Birthdate | Average\n\n");
+    for(int i = 0; i < num_of_studs; i++)
+    {
+        printf("%4d. | %11d | %10s %10s %10s | %2d/%2d/%4d | %3.2f (%c)\n", i + 1, ptr_stud[i].roll_no, ptr_stud[i].name.first_name, ptr_stud[i].name.middle_name, ptr_stud[i].name.last_name, ptr_stud[i].birthday.day, ptr_stud[i].birthday.month, ptr_stud[i].birthday.year, ptr_stud[i].average_grade, ptr_stud[i].overall_grade);
+        keys[i] = ptr_stud[i].id;
+    }
+
+    int option;
+    bool invalid;
+    do
+    {
+        printf("\nSelect the student to view his/her record: ");
+        int input_count = scanf(" %d", &option);
+        if (input_count != 1 || (option < 1 || option > num_items))
+        {
+            invalid = true;
+            scanf("%*[^\n]"); // clear input buffer
+            printf("\n invalid input\n");
+        }
+        else
+        {
+            option--;
+            display_record(ptr_stud[keys[option]]);
+            invalid = false;
+        }
+    }
+    while(invalid);
+
+}
+
+void avg_upove_90(struct student *ptr_stud)
+{
+
+    printf("\nList of Similar Results: \n\n");
+    int num = 0;
+    int num_items = num_of_studs;
+    int keys[num_items];
+    printf("  No. | Student No. | FirstName - MiddleName - LastName| Birthdate | Average\n\n");
+    for(int i = 0; i < num_of_studs; i++)
+    {
+        if(ptr_stud[i].average_grade >= 90)
+        {
+            printf("%4d. | %11d | %10s %10s %10s | %2d/%2d/%4d | %3.2f (%c)\n", num + 1, ptr_stud[i].roll_no, ptr_stud[i].name.first_name, ptr_stud[i].name.middle_name, ptr_stud[i].name.last_name, ptr_stud[i].birthday.day, ptr_stud[i].birthday.month, ptr_stud[i].birthday.year, ptr_stud[i].average_grade, ptr_stud[i].overall_grade);
+            keys[num] = ptr_stud[i].id;
+            num++;
+        }
+    }
+
+    if(num == 0)
+    {
+        printf("\n No Records Found \n");
+    }
+    else
+    {
+        int option;
+        bool invalid;
+        do
+        {
+            printf("\nSelect the student to view his/her record: ");
+            int input_count = scanf(" %d", &option);
+            if (input_count != 1 || (option < 1 || option > num))
+            {
+                invalid = true;
+                scanf("%*[^\n]"); // clear input buffer
+                printf("\n invalid input\n");
+            }
+            else
+            {
+                option--;
+                display_record(ptr_stud[keys[option]]);
+                invalid = false;
+            }
+        }
+        while(invalid);
+    }
+
+}
+
+void avg_below_40(struct student *ptr_stud)
+{
+
+    printf("\nList of Similar Results: \n\n");
+    int num = 0;
+    int num_items = num_of_studs;
+    int keys[num_items];
+    printf("  No. | Student No. | FirstName - MiddleName - LastName| Birthdate | Average\n\n");
+    for(int i = 0; i < num_of_studs; i++)
+    {
+        if(ptr_stud[i].average_grade <= 40)
+        {
+            printf("%4d. | %11d | %10s %10s %10s | %2d/%2d/%4d | %3.2f (%c)\n", num + 1, ptr_stud[i].roll_no, ptr_stud[i].name.first_name, ptr_stud[i].name.middle_name, ptr_stud[i].name.last_name, ptr_stud[i].birthday.day, ptr_stud[i].birthday.month, ptr_stud[i].birthday.year, ptr_stud[i].average_grade, ptr_stud[i].overall_grade);
+            keys[num] = ptr_stud[i].id;
+            num++;
+        }
+    }
+
+    if(num == 0)
+    {
+        printf("\n No Records Found \n");
+    }
+    else
+    {
+        int option;
+        bool invalid;
+        do
+        {
+            printf("\nSelect the student to view his/her record: ");
+            int input_count = scanf(" %d", &option);
+            if (input_count != 1 || (option < 1 || option > num))
             {
                 invalid = true;
                 scanf("%*[^\n]"); // clear input buffer
@@ -656,16 +839,6 @@ void rand_lastname(char *name)
 
 }
 
-bool invalid(int option)
-{
-
-    if(option > 0 && option <= 5)
-    {
-        return false;
-    }
-    return true;
-}
-
 int main()
 {
     srand(time(NULL)); // Seed the random number generator with the current time
@@ -678,17 +851,18 @@ int main()
     {
         average = 0;
         total = 0;
-        stud[i].roll_no = rand_num(100000000, 999999999);
         stud[i].id = i;
 
         if(i == num_of_studs -1)
         {
+            stud[i].roll_no = 130521998;
             strcpy(stud[i].name.first_name, "Radwan");
             strcpy(stud[i].name.middle_name, "Abdullah");
             strcpy(stud[i].name.last_name, "Al Shawesh");
         }
         else
         {
+            stud[i].roll_no = rand_num(100000000, 999999999);
             rand_firstname(stud[i].name.first_name);
             rand_middlename(stud[i].name.middle_name);
             rand_lastname(stud[i].name.last_name);
@@ -797,7 +971,8 @@ int main()
         printf("2. Search for student record by student number.\n");
         printf("3. Show all Grades.\n");
         printf("4. Show all students with less than 40%% aggregate.\n");
-        printf("5. Exit\n");
+        printf("5. Show all students with more than 90%% aggregate.\n");
+        printf("6. Exit\n");
 
         printf("\n Choose an option: ");
         int input_count = scanf(" %d", &option);
@@ -815,15 +990,27 @@ int main()
         case 1:
             search_by_name(ptr_stud);
             break;
+        case 2:
+            search_by_number(ptr_stud);
+            break;
+        case 3:
+            show_all(ptr_stud);
+            break;
+        case 4:
+            avg_below_40(ptr_stud);
+            break;
         case 5:
-            option = 5;
+            avg_upove_90(ptr_stud);
+            break;
+        case 6:
+            option = 6;
             break;
         default:
             printf("\n Invalid input. Please enter a valid menu option.\n");
             break;
         }
     }
-    while(option != 5);
+    while(option != 6);
 
     return 0;
 }
