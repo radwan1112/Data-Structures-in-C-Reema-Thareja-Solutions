@@ -948,6 +948,7 @@ int main()
         stud[i].sex = (rand_num(0, 1)? 'M':'F');
         stud[i].birthday.year = rand_num(1980, 2005);
         stud[i].birthday.month = rand_num(1, 12);
+
         if(stud[i].birthday.month == 2)
         {
             if(is_leap_year(stud[i].birthday.year))
