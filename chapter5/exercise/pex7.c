@@ -59,6 +59,5 @@ int main()
         printf("Position: %s", employees[i].position);
     }
 
-
     return 0;
 }
