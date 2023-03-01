@@ -748,7 +748,7 @@ void rand_middlename(char *name)
         "Ng",
         "Ngai",
         "Cheng",
-        "Wu",
+        "Wu",rand_firstname
         "Chen",
         "Zhao",
         "Xu",
