@@ -216,7 +216,7 @@ struct node *delete_node(struct node *start)
 
 struct node *delete_after(struct node *start)
 {
-    printf("\n Enter the index position of the node to delete the node after it: ");
+    printf("\n Enter the index position to delete a node after a given node: ");
     int pos;
     scanf(" %d", &pos);
     pos++;
