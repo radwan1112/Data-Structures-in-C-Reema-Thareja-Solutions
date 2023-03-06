@@ -7,6 +7,7 @@ struct node
     struct node *next;
 };
 struct node *start = NULL;
+struct node *start_backup = NULL;
 
 struct node *create_cll(struct node *start)
 {
@@ -148,6 +149,10 @@ struct node *delete_after(struct node *start)
 
 struct node *delete_list(struct node *start)
 {
+    if(start == NULL)
+    {
+        return start;
+    }
     struct node *ptr;
     ptr = start;
     while(ptr->next != start)
@@ -159,7 +164,35 @@ struct node *delete_list(struct node *start)
     return start;
 };
 
+struct node *backup_list(struct node *start, struct node *start_backup)
+{
+    struct node *new_node, *ptr, *ptr2;
+    ptr = start;
+    ptr2 = start_backup;
 
+    do
+    {
+        new_node = (struct node *)malloc(sizeof(struct node));
+        new_node->next = start_backup;
+        new_node->data = ptr->data;
+
+        if(start_backup == NULL)
+        {
+            start_backup = new_node;
+            ptr2 = start_backup;
+        }
+        else
+        {
+            ptr2->next = new_node;
+            ptr2 = ptr2->next;
+        }
+        ptr = ptr->next;
+    }
+    while(ptr != start);
+
+
+    return start_backup;
+};
 
 int main()
 {
@@ -175,7 +208,8 @@ int main()
         printf("\n 6: Delete a node from the end");
         printf("\n 7: Delete a node after a given node");
         printf("\n 8: Delete the entire list");
-        printf("\n 9: EXIT");
+        printf("\n 9: Back up the list");
+        printf("\n 10: EXIT");
         printf("\n\n Enter your option : ");
         scanf(" %d", &option);
         switch(option)
@@ -206,12 +240,17 @@ int main()
             start = delete_list(start);
             printf("\n CIRCULAR LINKED LIST DELETED");
             break;
+        case 9:
+            start_backup = delete_list(start_backup);
+            start_backup = backup_list(start, start_backup);
+            start_backup = display(start_backup);
+            break;
         default:
-            option = 9;
+            option = 10;
             break;
         }
     }
-    while(option !=9);
+    while(option !=10);
 
     return 0;
 }

@@ -3,17 +3,17 @@
 
 struct node
 {
+    struct node *prev;
     int data;
     struct node *next;
 };
 struct node *start = NULL;
 
-struct node *create_cll(struct node *start)
+struct node *create_cdll(struct node *start)
 {
     struct node *new_node, *ptr;
-    printf("\n Enter –1 to end");
-    printf("\n Enter the data : ");
     int num;
+    printf("\n Enter data: ");
     scanf(" %d", &num);
     while(num != -1)
     {
@@ -22,6 +22,7 @@ struct node *create_cll(struct node *start)
         if(start == NULL)
         {
             start = new_node;
+            new_node->prev = start;
             new_node->next = start;
         }
         else
@@ -31,10 +32,12 @@ struct node *create_cll(struct node *start)
             {
                 ptr = ptr->next;
             }
+            new_node->prev = ptr;
             ptr->next = new_node;
             new_node->next = start;
+            start->prev = new_node;
         }
-        printf("\n Enter the data : ");
+        printf("\n Enter data: ");
         scanf(" %d", &num);
     }
 
@@ -43,64 +46,62 @@ struct node *create_cll(struct node *start)
 
 struct node *display(struct node *start)
 {
-
     struct node *ptr;
     ptr = start;
-
-    printf("[");
+    printf("\n {");
     while(ptr->next != start)
     {
         printf("%d, ", ptr->data);
         ptr = ptr->next;
     }
-    printf("%d]", ptr->data);
+    printf("%d}", ptr->data);
     return start;
 };
 
 struct node *insert_beg(struct node *start)
 {
     struct node *new_node, *ptr;
-    printf("\n Enter data to add at the beginning: ");
     int num;
-    new_node = (struct node *)malloc(sizeof(struct node));
+    printf("\n Enter data: ");
     scanf(" %d", &num);
+    new_node = (struct node *)malloc(sizeof(struct node));
     new_node->data = num;
     ptr = start;
-
     while(ptr->next != start)
     {
         ptr = ptr->next;
     }
     ptr->next = new_node;
+    new_node->prev = ptr;
     new_node->next = start;
+    start->prev = new_node;
     start = new_node;
-
     return start;
 };
 
 struct node *insert_end(struct node *start)
 {
     struct node *new_node, *ptr;
-    new_node = (struct node *)malloc(sizeof(struct node));
-    printf("\n Enter data to insert at the end: ");
+    printf("\n Enter data: ");
     int num;
     scanf(" %d", &num);
+    new_node = (struct node *)malloc(sizeof(struct node));
     new_node->data = num;
     ptr = start;
-
     while(ptr->next != start)
     {
         ptr = ptr->next;
     }
     ptr->next = new_node;
+    new_node->prev = ptr;
     new_node->next = start;
-
+    start->prev = new_node;
     return start;
 };
 
 struct node *delete_beg(struct node *start)
 {
-    struct node *ptr;
+    struct node *ptr, *temp;
     ptr = start;
 
     while(ptr->next != start)
@@ -108,8 +109,10 @@ struct node *delete_beg(struct node *start)
         ptr = ptr->next;
     }
     ptr->next = start->next;
-    free(start);
-    start = ptr->next;
+    temp = start;
+    start = start->next;
+    start->prev = ptr;
+    free(temp);
     return start;
 };
 
@@ -124,23 +127,26 @@ struct node *delete_end(struct node *start)
         ptr = ptr->next;
     }
     preptr->next = start;
+    start->prev = preptr;
     free(ptr);
-
     return start;
 };
 
-struct node *delete_after(struct node *start)
+struct node *delete_node(struct node *start)
 {
     struct node *ptr, *preptr;
     int value;
+    printf("\n Enter the value: ");
+    scanf(" %d", &value);
     ptr = start;
-
-    while(preptr != value)
+    preptr = start->prev;
+    while(ptr->data != value)
     {
         preptr = ptr;
         ptr = ptr->next;
     }
     preptr->next = ptr->next;
+    ptr->next->prev = preptr;
     free(ptr);
 
     return start;
@@ -148,21 +154,45 @@ struct node *delete_after(struct node *start)
 
 struct node *delete_list(struct node *start)
 {
+
     struct node *ptr;
     ptr = start;
     while(ptr->next != start)
     {
         start = delete_end(start);
-        ptr = ptr->next;
     }
     free(start);
     return start;
 };
 
+struct node *sort_list(struct node *start)
+{
+    struct node *ptr, *ptr2;
+    int temp;
+    ptr = start;
+    do
+    {
+        ptr2 = ptr->next;
+        while(ptr2 != start)
+        {
+            if(ptr->data > ptr2->data)
+            {
+                temp = ptr->data;
+                ptr->data = ptr2->data;
+                ptr2->data = temp;
+            }
+            ptr2 = ptr2->next;
+        }
+        ptr = ptr->next;
+    }
+    while(ptr != start);
 
+    return start;
+};
 
 int main()
 {
+
     int option;
     do
     {
@@ -173,16 +203,18 @@ int main()
         printf("\n 4: Add a node at the end");
         printf("\n 5: Delete a node from the beginning");
         printf("\n 6: Delete a node from the end");
-        printf("\n 7: Delete a node after a given node");
+        printf("\n 7: Delete a given node");
         printf("\n 8: Delete the entire list");
-        printf("\n 9: EXIT");
+        printf("\n 9: Sort the list");
+        printf("\n 10: EXIT");
+
         printf("\n\n Enter your option : ");
-        scanf(" %d", &option);
+        scanf("%d", &option);
         switch(option)
         {
         case 1:
-            start = create_cll(start);
-            printf("\n CIRCULAR LINKED LIST CREATED");
+            start = create_cdll(start);
+            printf("\n CIRCULAR DOUBLY LINKED LIST CREATED");
             break;
         case 2:
             start = display(start);
@@ -200,18 +232,22 @@ int main()
             start = delete_end(start);
             break;
         case 7:
-            start = delete_after(start);
+            start = delete_node(start);
             break;
         case 8:
             start = delete_list(start);
-            printf("\n CIRCULAR LINKED LIST DELETED");
+            printf("\n CIRCULAR DOUBLY LINKED LIST DELETED");
+            break;
+        case 9:
+            start = sort_list(start);
+            printf("\n CIRCULAR DOUBLY LINKED LIST SORTED");
             break;
         default:
-            option = 9;
+            option = 10;
             break;
         }
     }
-    while(option !=9);
+    while(option != 10);
 
     return 0;
 }
