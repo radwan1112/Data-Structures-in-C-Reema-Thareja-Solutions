@@ -156,8 +156,14 @@ void infixToPostfix()
             printf("\n Error");
             return;
         }
+        printf("\n\t%c\t    |", infix[i]);
+        int k = 0;
+        for(k = top; k >-1; k--)
+        {
+            printf("%c ", stack[k]);
+        }
+        printf("\t\t\t  | %s", postfix);
     }
-
     // Pop all remaining elements from the stack
     while (top > -1)
     {
@@ -165,6 +171,13 @@ void infixToPostfix()
         {
             return "Invalid Expression";
         }
+        printf("\n\t%c\t    |", infix[i]);
+        int k = 0;
+        for(k = top; k >-1; k--)
+        {
+            printf("%c ", stack[k]);
+        }
+        printf("\t\t\t  | %s", postfix);
         postfix[j++] = pop();
     }
     postfix[j] = '\0';
