@@ -4,7 +4,40 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_EXPR_SIZE 100
+#define MAX 100
+
+char stack[MAX];
+int top = -1;
+
+char infix[MAX];
+char postfix[MAX];
+
+char pop()
+{
+    char val = -1;
+    if(top == -1)
+    {
+        printf("\n STACK UNDERFLOW");
+    }
+    else
+    {
+        val = stack[top--];
+    }
+    return val;
+}
+
+void push(char symbol)
+{
+    if(top == MAX - 1)
+    {
+        printf("\n STACK OVERFLOW");
+    }
+    else
+    {
+        top++;
+        stack[top] = symbol;
+    }
+}
 
 // Function to return precedence of operators
 int precedence(char operator)
@@ -25,64 +58,58 @@ int precedence(char operator)
     }
 }
 
-// Function to check if the scanned character
-// is an operator
+// Function to check if the scanned character is an operator
 int isOperator(char ch)
 {
     return (ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '%' || ch == '^');
 }
 
-// Main functio to convert infix expression
-// to postfix expression
-char* infixToPostfix(char* infix)
+// Main function to convert infix expression to postfix expression
+void infixToPostfix()
 {
     int i, j;
     int len = strlen(infix);
-    char* postfix = (char*)malloc(sizeof(char) * (len + 2));
-    char stack[MAX_EXPR_SIZE];
-    int top = -1;
 
     for (i = 0, j = 0; i < len; i++)
     {
         if (infix[i] == ' ' || infix[i] == '\t')
+        {
             continue;
+        }
 
-        // If the scanned character is operand
-        // add it to the postfix expression
+        // If the scanned character is operand add it to the postfix expression
         if (isalnum(infix[i]))
         {
             postfix[j++] = infix[i];
         }
 
-        // if the scanned character is '('
-        // push it in the stack
+        // if the scanned character is '(' push it in the stack
         else if (infix[i] == '(')
         {
-            stack[++top] = infix[i];
+            push(infix[i]);
         }
 
-        // if the scanned character is ')'
-        // pop the stack and add it to the
-        // output string until empty or '(' found
+        // if the scanned character is ')'pop the stack
+        // and add it to the output string until empty or '(' found
         else if (infix[i] == ')')
         {
             while (top > -1 && stack[top] != '(')
-                postfix[j++] = stack[top--];
+                postfix[j++] = pop();
             if (top > -1 && stack[top] != '(')
                 return "Invalid Expression";
             else
-                top--;
+                pop();
         }
 
         // If the scanned character is an operator
         // push it in the stack
         else if (isOperator(infix[i]))
         {
-            while (top > -1
-                    && precedence(stack[top])
-                    >= precedence(infix[i]))
-                postfix[j++] = stack[top--];
-            stack[++top] = infix[i];
+            while (top > -1&& precedence(stack[top]) >= precedence(infix[i]))
+            {
+                postfix[j++] = pop();
+            }
+            push(infix[i]);
         }
     }
 
@@ -93,20 +120,39 @@ char* infixToPostfix(char* infix)
         {
             return "Invalid Expression";
         }
-        postfix[j++] = stack[top--];
+        postfix[j++] = pop();
     }
     postfix[j] = '\0';
-    return postfix;
 }
 
 // Driver code
 int main()
 {
-    char infix[MAX_EXPR_SIZE] = "A + B - C * D^F";
+    int option;
+    do
+    {
+        printf("\n *****MENU*****");
+        printf("\n 1. Convert Infix to Postfix");
+        printf("\n 2. EXIT\n");
 
-    // Function call
-    char* postfix = infixToPostfix(infix);
-    printf("The postfix expression is: %s\n", postfix);
-    free(postfix);
+        printf("\n Enter Option: ");
+        scanf(" %d", &option);
+        getchar();
+
+        switch(option)
+        {
+        case 1:
+            printf("\n Enter the infix expression: ");
+            gets(infix);
+            infixToPostfix(infix);
+            printf("\n The postfix expression is: %s\n", postfix);
+            break;
+        default:
+            option = 2;
+            break;
+        }
+    }
+    while(option != 2);
+
     return 0;
 }
