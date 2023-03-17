@@ -3,11 +3,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define MAX 100
 
 char stack[MAX];
 int top = -1;
+
+float stack2[MAX];
+int top2 = -1;
 
 char infix[MAX];
 char postfix[MAX];
@@ -47,6 +51,33 @@ void push(char symbol)
     }
 }
 
+float pop2()
+{
+    float val = -1;
+    if(top2 == -1)
+    {
+        printf("\n STACK UNDERFLOW");
+    }
+    else
+    {
+        val = stack2[top2--];
+    }
+    return val;
+}
+
+void push2(float symbol)
+{
+    if(top2 == MAX - 1)
+    {
+        printf("\n STACK OVERFLOW");
+    }
+    else
+    {
+        top2++;
+        stack2[top2] = symbol;
+    }
+}
+
 // Function to return precedence of operators
 int precedence(char operator)
 {
@@ -78,6 +109,7 @@ void infixToPostfix()
     int i, j;
     int len = strlen(infix);
 
+    printf("\n Infix Char Scanned | Stack               | Postfix Expression");
     for (i = 0, j = 0; i < len; i++)
     {
         if (infix[i] == ' ' || infix[i] == '\t')
@@ -118,6 +150,11 @@ void infixToPostfix()
                 postfix[j++] = pop();
             }
             push(infix[i]);
+        }
+        else
+        {
+            printf("\n Error");
+            return;
         }
     }
 
@@ -230,10 +267,67 @@ int check_balanced(char *exp)
     }
 }
 
+float eval_post()
+{
+    int len = strlen(postfix);
+    char symbol;
+    float total, a, b;
+
+    printf("\n Character Scanned | Stack");
+    int i, j;
+    for(i = 0; i < len; i++)
+    {
+        symbol = postfix[i];
+        if(isdigit(symbol))
+        {
+            push2((float)(symbol - '0'));
+        }
+        else if(isOperator(symbol))
+        {
+            total = 0;
+            a = pop2();
+            b = pop2();
+
+            switch(symbol)
+            {
+            case '+':
+                total = b + a;
+                break;
+            case '-':
+                total = b - a;
+                break;
+            case '*':
+                total = b * a;
+                break;
+            case '/':
+                total = b / a;
+                break;
+            case '%':
+                total = (int)b % (int)a;
+                break;
+            case '^':
+                total = pow(b, a);
+                break;
+            default:
+                printf("\n Invalid Operator!");
+                break;
+            }
+            push2(total);
+        }
+        printf("\n\t%c\t     ", symbol);
+        for(j = top2; j > -1; j--)
+        {
+            printf("%.2f, ", stack2[j]);
+        }
+    }
+    return pop2();
+}
+
 // Driver code
 int main()
 {
     int option;
+    float result;
 
     do
     {
@@ -254,7 +348,7 @@ int main()
             gets(infix);
             if(check_balanced(infix))
             {
-                infixToPostfix(infix);
+                infixToPostfix();
                 printf("\n The postfix expression is: %s\n", postfix);
             }
             else
@@ -264,12 +358,31 @@ int main()
             break;
         case 2:
             printf("\n Enter the infix expression: ");
+            gets(infix);
+            if(check_balanced(infix))
+            {
+                infixToPostfix();
+                result = eval_post();
+                printf("\n\n Summary: ");
+                printf("\n\n Infix\n\t %s = %.2f", infix, result);
+                printf("\n Postfix\n\t %s = %.2f\n", postfix, result);
+            }
+            else
+            {
+                printf("\n Hence, Expression is invalid\n");
+            }
+            break;
+        case 3:
+            printf("\n Enter the postfix expression: ");
+            gets(postfix);
+            result = eval_post();
+            printf("\n Postfix\n\t %s = %.2f\n", postfix, result);
         default:
-            option = 2;
+            option = 4;
             break;
         }
     }
-    while(option != 2);
+    while(option != 4);
 
     return 0;
 }
