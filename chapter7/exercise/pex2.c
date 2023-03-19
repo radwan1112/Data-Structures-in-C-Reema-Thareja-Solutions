@@ -30,8 +30,7 @@ char *infix2postfix(char *infix)
     int top = -1;
 
     int i, j;
-
-    for(i = 0; i < len; i++)
+    for(i = 0, j = 0; i < len; i++)
     {
         if(infix[i] == ' ')
         {
@@ -48,6 +47,7 @@ char *infix2postfix(char *infix)
                 postfix[j++] = stack[top--];
             }
             top--;
+            break;
         case '+':
         case '-':
         case '*':
@@ -85,6 +85,6 @@ int main()
     gets(infix);
     postfix = infix2postfix(infix);
     printf("\n Converting infix to postfix expression \n");
-    printf("\n   %s  <->  %s", infix, postfix);
+    printf("\n   %s  <->  %s\n", infix, postfix);
     free(postfix);
 }

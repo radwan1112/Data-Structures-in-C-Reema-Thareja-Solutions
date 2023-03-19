@@ -22,40 +22,56 @@ int precedence(char c)
     }
 }
 
+void reverse_string(char *str)
+{
+    int stack[MAX];
+    int top = -1;
+    int i = 0;
+    while(str[i] != '\0')
+    {
+        stack[++top] = str[i];
+        i++;
+    }
+    i = 0;
+    while(top > -1)
+    {
+        if(stack[top] == '(')
+        {
+            str[i] = ')';
+            top--;
+        }
+        else if(stack[top] == ')')
+        {
+            str[i] = '(';
+            top--;
+        }
+        else
+        {
+            str[i] = stack[top--];
+        }
+        i++;
+    }
+    str[i] = '\0';
+}
+
 char *infix2prefix(char *infix)
 {
     int len = strlen(infix);
     char *prefix = (char *)malloc(sizeof(char) * (len + 2));
-    char *rev_infix = (char *)malloc(sizeof(char) * (len + 2));
     char stack[MAX];
     int top = -1;
-
     int i, j;
-    for(i = len - 1, j = 0; i < len; i--, j++)
-    {
-        if(infix[i] == '(')
-        {
-            temp[j] = ')';
-        }
-        else if(infix[i] == ')')
-        {
-            temp[j] = '(';
-        }
-        else
-        {
-            temp[j] = infix[i];
-        }
-    }
-    temp[j] = '\0';
+    reverse_string(infix);
+    printf(" \n Reversed infix string: %s", infix);
 
     j = 0;
     for(i = 0; i < len; i++)
     {
-        if(temp[i] == ' ')
+        if(infix[i] == ' ')
         {
             continue;
         }
-        switch(temp[i])
+        switch(infix[i])
         {
         case '(':
             stack[++top] = '(';
@@ -66,20 +82,21 @@ char *infix2prefix(char *infix)
                 prefix[j++] = stack[top--];
             }
             top--;
+            break;
         case '+':
         case '-':
         case '*':
         case '/':
         case '%':
         case '^':
-            while((top > -1) && (precedence(stack[top]) >= precedence(temp[i])))
+            while((top > -1) && (precedence(stack[top]) >= precedence(infix[i])))
             {
                 prefix[j++] = stack[top--];
             }
-            stack[++top] = temp[i];
+            stack[++top] = infix[i];
             break;
         default:
-            prefix[j++] = temp[i];
+            prefix[j++] = infix[i];
             break;
         }
     }
@@ -89,27 +106,12 @@ char *infix2prefix(char *infix)
         prefix[j++] = stack[top--];
     }
     prefix[j] = '\0';
+    printf("\n postfix string %s", prefix);
+    reverse_string(prefix);
 
-    //reverse second time
-    len = strlen(prefix);
-    for(i = len - 1, j = 0; i < len; i--, j++)
-    {
-        if(prefix[i] == '(')
-        {
-            temp[j] = ')';
-        }
-        else if(infix[i] == ')')
-        {
-            temp[j] = '(';
-        }
-        else
-        {
-            temp[j] = infix[i];
-        }
-    }
-    temp[j] = '\0';
+    printf("\n prefix string: %s", prefix);
 
-    return temp;
+    return prefix;
 }
 
 
