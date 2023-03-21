@@ -1,16 +1,18 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#define MAX 10
+#define MAX 5
 
-int queue[MAX];
-int front = -1, rear = -1;
+int queue[5];
+int front = -1;
+int rear = -1;
 
-
-void insert(int val)
+void enqueue(int val)
 {
     if(rear == MAX - 1)
     {
-        printf("\n QUEUE OVERFLOW");
+        printf("\n OVERFLOW \n");
+        return;
     }
     if(front == -1 && rear == -1)
     {
@@ -24,27 +26,33 @@ void insert(int val)
     queue[rear] = val;
 }
 
-int delete_element()
+int dequeue()
 {
     int val;
-
     if(front == -1 || front > rear)
     {
-        printf("\n queue underflow");
+        printf("\n Underflow");
+        return -1;
     }
     else
     {
         val = queue[front];
         front++;
+        if(front > rear)
+        {
+            front = -1;
+            rear = -1;
+        }
+        return val;
     }
-    return val;
 }
 
 int peek()
 {
     if(front == -1 || front > rear)
     {
-        printf("\n queue underflow");
+        printf("\n Underflow");
+        return -1;
     }
     else
     {
@@ -57,19 +65,16 @@ void display()
     if(front == -1 || front > rear)
     {
         printf("\n QUEUE IS EMPTY");
+        return;
     }
-    else
+    int i;
+    printf("\n  ");
+    for(i = front; i < rear; i++)
     {
-        int i = front;
-        printf("\n\t");
-        while(i <= rear)
-        {
-            printf("%d ", queue[i]);
-            i++;
-        }
+        printf("%d -> ", queue[i]);
     }
+    printf("%d", queue[i]);
 }
-
 
 int main()
 {
@@ -77,34 +82,35 @@ int main()
 
     do
     {
-        printf("\n\n ***** MAIN MENU *****");
-        printf("\n 1. Insert an element");
-        printf("\n 2. Delete an element");
+        printf("\n *****MENU*****");
+        printf("\n 1. Insert new element");
+        printf("\n 2. Delete element");
         printf("\n 3. Peek");
-        printf("\n 4. Display the queue");
-        printf("\n 5. EXIT");
+        printf("\n 4. Display queue");
+        printf("\n 5. EXIT\n");
 
-        printf("\n Enter your option: ");
+        printf("\n Enter option: ");
         scanf(" %d", &option);
+
         switch(option)
         {
         case 1:
-            printf("\n Enter value to insert: ");
+            printf("\n Enter number to insert: ");
             scanf(" %d", &val);
-            insert(val);
+            enqueue(val);
             break;
         case 2:
-            val = delete_element();
+            val = dequeue();
             if(val != -1)
             {
-                printf("\n The deleted value is %d", val);
+                printf("\n The value deleted is %d", val);
             }
             break;
         case 3:
             val = peek();
             if(val != -1)
             {
-                printf("The first value in the queue is %d", val);
+                printf("\n The front value is %d", val);
             }
             break;
         case 4:
@@ -116,5 +122,6 @@ int main()
         }
     }
     while(option != 5);
+
     return 0;
 }

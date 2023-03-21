@@ -13,8 +13,6 @@ struct queue
     struct node *rear;
 };
 
-struct queue *q;
-
 void create_queue(struct queue *q)
 {
     q->front = NULL;
@@ -27,7 +25,8 @@ struct queue *enqueue(struct queue *q, int val)
     new_node = (struct node *)malloc(sizeof(struct node));
     new_node->data = val;
     new_node->next = NULL;
-    if(q->front == NULL)
+
+    if(q->front == NULL && q->rear == NULL)
     {
         q->front = new_node;
         q->rear = new_node;
@@ -38,30 +37,29 @@ struct queue *enqueue(struct queue *q, int val)
         q->rear = new_node;
     }
     return q;
-}
+};
 
 struct queue *dequeue(struct queue *q)
 {
     struct node *ptr;
-    ptr = q->front;
-
     if(q->front == NULL)
     {
-        printf("\n QUEUE UNDERFLOW");
+        printf("\n UNDERFLOW\n");
     }
     else
     {
-        q->front = q->front->next;
+        ptr = q->front;
+        q->front = ptr->next;
         free(ptr);
     }
     return q;
-};
+}
 
 int peek(struct queue *q)
 {
     if(q->front == NULL)
     {
-        printf("\n QUEUE UNDERFLOW");
+        printf("\n QUEUE IS EMPTY");
         return -1;
     }
     else
@@ -74,13 +72,12 @@ void display(struct queue *q)
 {
     if(q->front == NULL)
     {
-        printf("\n QUEUE UNDERFLOW");
+        printf("\n QUEUE US EMPTY");
         return;
     }
     struct node *ptr;
     ptr = q->front;
 
-    printf("\n ");
     while(ptr->next != NULL)
     {
         printf("%d -> ", ptr->data);
@@ -89,29 +86,29 @@ void display(struct queue *q)
     printf("%d", ptr->data);
 }
 
-
 int main()
 {
     int option, val;
+    struct queue *q;
     q = (struct queue *)malloc(sizeof(struct queue));
     create_queue(q);
 
     do
     {
-        printf("\n *****MAIN MENU*****");
-        printf("\n 1. ENQUEUE");
-        printf("\n 2. DEQUEUE");
-        printf("\n 3. PEEK");
-        printf("\n 4. DISPLAY");
+        printf("\n *****MENU*****");
+        printf("\n 1. Insert new element");
+        printf("\n 2. Delete element");
+        printf("\n 3. Peek");
+        printf("\n 4. Display Queue");
         printf("\n 5. EXIT\n");
 
-        printf("\n Enter your option : ");
-        scanf("%d", &option);
+        printf("\n Enter Option: ");
+        scanf(" %d", &option);
 
         switch(option)
         {
         case 1:
-            printf("\n Enter the number to insert: ");
+            printf("\n Enter a number: ");
             scanf(" %d", &val);
             q = enqueue(q, val);
             break;
@@ -120,14 +117,14 @@ int main()
             q = dequeue(q);
             if(val != -1)
             {
-                printf("\n The value dequeued is %d", val);
+                printf("\n The value deleted is %d", val);
             }
             break;
         case 3:
             val = peek(q);
             if(val != -1)
             {
-                printf("\n The value at front is %d", val);
+                printf("\n The front value is %d", val);
             }
             break;
         case 4:
