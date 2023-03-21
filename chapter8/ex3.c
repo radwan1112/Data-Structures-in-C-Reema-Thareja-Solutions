@@ -9,32 +9,32 @@ int rear = -1;
 
 void enqueue(int val)
 {
-    if(front == 0 && rear == MAX - 1)
+    if((rear + 1) % MAX == front)
     {
-        printf("\n OVERFLOW");
+        printf("\n OVERFLOW\n");
         return;
     }
     if(front == -1 && rear == -1)
     {
-        front++;
-        rear++;
+        front = 0;
+        rear = 0;
     }
-    else if(rear == MAX - 1 && front != 0)
+    else if(rear == MAX - 1 && front  != 0)
     {
         rear = 0;
     }
     else
     {
-        rear++;
+        rear = (rear + 1) % MAX;
     }
     queue[rear] = val;
 }
 
 int dequeue()
 {
-    if(front == -1 && rear == -1)
+    if(front == -1)
     {
-        printf("\n UNDERFLOW");
+        printf("\n UNDERFLOW\n");
         return -1;
     }
     int val = queue[front];
@@ -59,9 +59,9 @@ int dequeue()
 
 int peek()
 {
-    if(front == -1 && rear == -1)
+    if(front == -1)
     {
-        printf("\n QUEUE IS EMPTY");
+        printf("\n QUEUE IS EMPTY\n");
         return -1;
     }
     return queue[front];
@@ -69,25 +69,33 @@ int peek()
 
 void display()
 {
-    int i;
-    printf("\n  ");
-    if(front == -1 && rear == -1)
+    if(front == -1)
     {
-        printf("\n QUEUE IS EMPTY");
+        printf("\n QUEUE IS EMPTY\n");
     }
     else
     {
-        if(front<rear)
+        int i;
+        printf("\n   ");
+        if(front > rear)
         {
-            for(i=front; i<=rear; i++)
-                printf("\t %d", queue[i]);
+            for(i = front; i < MAX; i++)
+            {
+                printf("%d -> ", queue[i]);
+            }
+            for(i = 0; i < rear; i++)
+            {
+                printf("%d -> ", queue[i]);
+            }
+            printf("%d", queue[i]);
         }
         else
         {
-            for(i=front; i<MAX; i++)
-                printf("\t %d", queue[i]);
-            for(i=0; i<=rear; i++)
-                printf("\t %d", queue[i]);
+            for(i = front; i < rear; i++)
+            {
+                printf("%d -> ", queue[i]);
+            }
+            printf("%d", queue[i]);
         }
     }
 }
@@ -98,19 +106,20 @@ int main()
 
     do
     {
-        printf("\n ***** MAIN MENU *****");
-        printf("\n 1. Insert an element");
-        printf("\n 2. Delete an element");
+        printf("\n *****MENU*****");
+        printf("\n 1. Insert a new element");
+        printf("\n 2. Delete element");
         printf("\n 3. Peek");
-        printf("\n 4. Display the queue");
+        printf("\n 4. Display");
         printf("\n 5. EXIT\n");
-        printf("\n Enter your option : ");
 
+        printf("\n Enter Option: ");
         scanf(" %d", &option);
+
         switch(option)
         {
         case 1:
-            printf("\n Enter number to add: ");
+            printf("\n Enter number: ");
             scanf(" %d", &val);
             enqueue(val);
             break;
@@ -118,7 +127,7 @@ int main()
             val = dequeue();
             if(val != -1)
             {
-                printf("\n The value deleted is %d", val);
+                printf("The value deleted is %d", val);
             }
             break;
         case 3:
@@ -132,13 +141,11 @@ int main()
             display();
             break;
         default:
-            option = 5;
             break;
         }
 
     }
     while(option != 5);
-
 
     return 0;
 }
