@@ -102,7 +102,6 @@ void display(struct queue *q)
 int main()
 {
     int option, val;
-
     struct queue *q;
     q = (struct queue *)malloc(sizeof(struct queue));
 

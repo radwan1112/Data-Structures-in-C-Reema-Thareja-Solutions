@@ -143,9 +143,7 @@ int main()
         default:
             break;
         }
-
     }
     while(option != 5);
-
     return 0;
 }
