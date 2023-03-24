@@ -14,10 +14,11 @@ struct queue
     struct node *rear;
 };
 
-void create_queue(struct queue *q)
+struct queue *create_queue(struct queue *q)
 {
     q->front = NULL;
     q->rear = NULL;
+    return q;
 }
 
 struct queue *enqueue(struct queue *q, char val, int p)
@@ -125,7 +126,7 @@ int main()
     int p;
     struct queue *q;
     q = (struct queue *)malloc(sizeof(struct queue));
-    create_queue(q);
+    q = create_queue(q);
 
     do
     {
@@ -182,5 +183,6 @@ int main()
         }
     }
     while(option != 5);
+    free(q);
     return 0;
 }
