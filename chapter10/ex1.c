@@ -205,7 +205,7 @@ int total_internal_nodes(struct node *tree)
 
 int heigth(struct node *tree)
 {
-    int left_heigth, rigth_heigth;
+    int left_heigth, right_heigth;
     if(tree == NULL)
     {
         return 0;
@@ -213,14 +213,14 @@ int heigth(struct node *tree)
     else
     {
         left_heigth = heigth(tree->left);
-        rigth_heigth = heigth(tree->right);
-        if(left_heigth > rigth_heigth)
+        right_heigth = heigth(tree->right);
+        if(left_heigth > right_heigth)
         {
             return left_heigth + 1;
         }
         else
         {
-            return rigth_heigth + 1;
+            return right_heigth + 1;
         }
     }
 }
