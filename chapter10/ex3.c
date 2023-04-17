@@ -1,336 +1,509 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
 
-struct node
+using namespace std;
+
+struct node_of_the_red_black_tree
 {
-    int data;
-    struct node *left;
-    struct node *right;
-    int balance;
+    int key;
+    node_of_the_red_black_tree *parent;
+    char color;
+    node_of_the_red_black_tree *left;
+    node_of_the_red_black_tree *right;
 };
-
-struct node *minValueNode(struct node *node)
+class Red_Black_Tree
 {
-    struct node *current = node;
-
-    while (current->left != NULL)
-        current = current->left;
-
-    return current;
-}
-
-struct node *find_smallest_element(struct node *tree)
-{
-    if(tree == NULL || tree->left == NULL)
+    node_of_the_red_black_tree *root;
+    node_of_the_red_black_tree *temp_node1;
+public :
+    Red_Black_Tree()
     {
-        return tree;
+        temp_node1=NULL;
+        root=NULL;
+    }
+    void insert_a_node_to_rbt();
+    void insert_a_node_to_rbtfix(node_of_the_red_black_tree *);
+    void leftrotate_rbt_node(node_of_the_red_black_tree *);
+    void rightrotate_rbt_node(node_of_the_red_black_tree *);
+    void del_rbt_node();
+    node_of_the_red_black_tree* successor(node_of_the_red_black_tree *);
+    void del_rbt_nodefix(node_of_the_red_black_tree *);
+    void disp();
+    void display( node_of_the_red_black_tree *);
+    void search_rbt_node();
+};
+void Red_Black_Tree::insert_a_node_to_rbt()
+{
+    int init_value,i=0;
+    cout<<"\nKey value for the node_of_the_red_black_tree to insert_a_node_to_rbt in RBT: ";
+    cin>>init_value;
+    node_of_the_red_black_tree *temp_node,*temp_node1;
+    node_of_the_red_black_tree *t=new node_of_the_red_black_tree;
+    t->key=init_value;
+    t->left=NULL;
+    t->right=NULL;
+    t->color='r';
+    temp_node=root;
+    temp_node1=NULL;
+    if(root==NULL)
+    {
+        root=t;
+        t->parent=NULL;
     }
     else
     {
-        return find_smallest_element(tree->left);
-    }
-};
-
-struct node *find_largest_element(struct node *tree)
-{
-    if(tree == NULL || tree->right == NULL)
-    {
-        return tree;
-    }
-    else
-    {
-        return find_largest_element(tree->right);
-    }
-};
-
-int height(struct node *tree)
-{
-    int left_height, right_height;
-    if(tree == NULL)
-    {
-        return 0;
-    }
-    else
-    {
-        left_height = height(tree->left);
-        right_height = height(tree->right);
-        if(left_height > right_height)
+        while(temp_node!=NULL)
         {
-            return left_height + 1;
+            temp_node1=temp_node;
+            if(temp_node->key<t->key)
+                temp_node=temp_node->right;
+            else
+                temp_node=temp_node->left;
         }
+        t->parent=temp_node1;
+        if(temp_node1->key<t->key)
+            temp_node1->right=t;
         else
-        {
-            return right_height + 1;
-        }
+            temp_node1->left=t;
     }
+    insert_a_node_to_rbtfix(t);
 }
-
-int balance_factor(struct node *tree)
+void Red_Black_Tree::insert_a_node_to_rbtfix(node_of_the_red_black_tree *t)
 {
-    if(tree == NULL)
+    node_of_the_red_black_tree *u;
+    if(root==t)
     {
-        return 0;
+        t->color='b';
+        return;
     }
-    else if(tree->left == NULL && tree->right == NULL)
+    while(t->parent!=NULL&&t->parent->color=='r')
     {
-        return 0;
-    }
-    else if(tree->left == NULL && tree->right != NULL)
-    {
-        return -(height(tree->right) + 1);
-    }
-    else if(tree->right == NULL && tree->left != NULL)
-    {
-        return height(tree->left) + 1;
-    }
-    else
-    {
-        return ((height(tree->left) + 1) - (height(tree->right) + 1));
-    }
-}
-
-struct node *rightRotate(struct node *y)
-{
-    struct node *x = y->left;
-    struct node *t2 = x->right;
-    x->right = y;
-    y->left = t2;
-    y->balance = balance_factor(y);
-    x->balance = balance_factor(x);
-    return x;
-};
-
-struct node *leftRotate(struct node *x)
-{
-    struct node *y = x->right;
-    struct node *t2 = y->left;
-    y->left = x;
-    x->right = t2;
-    x->balance = balance_factor(x);
-    y->balance = balance_factor(y);
-    return y;
-};
-
-struct node *insert_node(struct node *tree, int val)
-{
-    if(tree == NULL)
-    {
-        tree = (struct node *)malloc(sizeof(struct node));
-        tree->data = val;
-        tree->balance = 0;
-        tree->left = tree->right = NULL;
-    }
-    else
-    {
-        if(val < tree->data)
+        node_of_the_red_black_tree *g=t->parent->parent;
+        if(g->left==t->parent)
         {
-            tree->left = insert_node(tree->left, val);
-        }
-        else if(val > tree->data)
-        {
-            tree->right = insert_node(tree->right, val);
-        }
-        else
-        {
-            return tree;
-        }
-    }
-
-    //Balance factor check
-    tree->balance = balance_factor(tree);
-
-    if(tree->balance > 1 && balance_factor(tree->left) >= 0)
-    {
-        return rightRotate(tree);
-    }
-    if(tree->balance > 1 && balance_factor(tree->left) < 0)
-    {
-        tree->left = leftRotate(tree->left);
-        return rightRotate(tree);
-    }
-    if(tree->balance < -1 && balance_factor(tree->right) <= 0)
-    {
-        return leftRotate(tree);
-    }
-    if(tree->balance < -1 && balance_factor(tree->right) > 0)
-    {
-        tree->right = rightRotate(tree->right);
-        return leftRotate(tree);
-    }
-
-    return tree;
-};
-
-struct node *delete_node(struct node *tree, int val)
-{
-    struct node *temp;
-    if(tree == NULL)
-    {
-        printf("\n Element not found in the tree");
-        return tree;
-    }
-
-    if(val < tree->data)
-    {
-        tree->left = delete_node(tree->left, val);
-    }
-    else if(val > tree->data)
-    {
-        tree->right = delete_node(tree->right, val);
-    }
-    else
-    {
-        if((tree->left == NULL) || (tree->right == NULL))
-        {
-            struct node *temp = tree->left ? tree->left : tree->right;
-            if(temp == NULL)
+            if(g->right!=NULL)
             {
-                temp = tree;
-                tree = NULL;
+                u=g->right;
+                if(u->color=='r')
+                {
+                    t->parent->color='b';
+                    u->color='b';
+                    g->color='r';
+                    t=g;
+                }
             }
             else
             {
-                *tree = *temp;
+                if(t->parent->right==t)
+                {
+                    t=t->parent;
+                    leftrotate_rbt_node(t);
+                }
+                t->parent->color='b';
+                g->color='r';
+                rightrotate_rbt_node(g);
             }
-            free(temp);
         }
         else
         {
-            struct node *temp = minValueNode(tree->right);
-            tree->data = temp->data;
-            tree->right = delete_node(tree->right, temp->data);
+            if(g->left!=NULL)
+            {
+                u=g->left;
+                if(u->color=='r')
+                {
+                    t->parent->color='b';
+                    u->color='b';
+                    g->color='r';
+                    t=g;
+                }
+            }
+            else
+            {
+                if(t->parent->left==t)
+                {
+                    t=t->parent;
+                    rightrotate_rbt_node(t);
+                }
+                t->parent->color='b';
+                g->color='r';
+                leftrotate_rbt_node(g);
+            }
+        }
+        root->color='b';
+    }
+}
+
+void Red_Black_Tree::del_rbt_node()
+{
+    if(root==NULL)
+    {
+        cout<<"\nEmpty Tree." ;
+        return ;
+    }
+    int x;
+    cout<<"\nEnter the key of the node_of_the_red_black_tree to be del_rbt_nodeeted: ";
+    cin>>x;
+    node_of_the_red_black_tree *temp_node;
+    temp_node=root;
+    node_of_the_red_black_tree *y=NULL;
+    node_of_the_red_black_tree *temp_node1=NULL;
+    int found=0;
+    while(temp_node!=NULL&&found==0)
+    {
+        if(temp_node->key==x)
+            found=1;
+        if(found==0)
+        {
+            if(temp_node->key<x) temp_node=temp_node->right;
+            else
+                temp_node=temp_node->left;
         }
     }
-
-    if(tree == NULL)
+    if(found==0)
     {
-        return tree;
+        cout<<"\nElement Not Found.";
+        return ;
     }
-    //Balance factor check
-    tree->balance = balance_factor(tree);
-    // Left Left Case
-    if (tree->balance > 1 && val < tree->left->data)
+    else
     {
-        return rightRotate(tree);
+        cout<<"\ndel_rbt_nodeeted Element: "<<temp_node->key;
+        cout<<"\nColour: ";
+        if(temp_node->color=='b')
+            cout<<"Black\n";
+        else
+            cout<<"Red\n";
+        if(temp_node->parent!=NULL)
+            cout<<"\nParent: "<<temp_node->parent->key;
+        else
+            cout<<"\nno parent node_of_the_red_black_tree present ";
+        if(temp_node->right!=NULL)
+            cout<<"\nRight Child: "<<temp_node->right->key;
+        else
+            cout<<"\nno right child node_of_the_red_black_tree present. ";
+        if(temp_node->left!=NULL)
+            cout<<"\nLeft Child: "<<temp_node->left->key;
+        else
+            cout<<"\nno left child node_of_the_red_black_tree present.  ";
+        cout<<"\nnode_of_the_red_black_tree del_rbt_nodeeted.";
+        if(temp_node->left==NULL||temp_node->right==NULL)
+            y=temp_node;
+        else
+            y=successor(temp_node);
+        if(y->left!=NULL)
+            temp_node1=y->left;
+        else
+        {
+            if(y->right!=NULL)
+                temp_node1=y->right;
+            else
+                temp_node1=NULL;
+        }
+        if(temp_node1!=NULL)
+            temp_node1->parent=y->parent;
+        if(y->parent==NULL)
+            root=temp_node1;
+        else
+        {
+            if(y==y->parent->left)
+                y->parent->left=temp_node1;
+            else
+                y->parent->right=temp_node1;
+        }
+        if(y!=temp_node)
+        {
+            temp_node->color=y->color;
+            temp_node->key=y->key;
+        }
+        if(y->color=='b')
+            del_rbt_nodefix(temp_node1);
     }
-    // Right Right Case
-    if (tree->balance < -1 && val > tree->right->data)
-    {
-        return leftRotate(tree);
-    }
-    // Left Right Case
-    if (tree->balance > 1 && val > tree->left->data)
-    {
-        tree->left =  leftRotate(tree->left);
-        return rightRotate(tree);
-    }
-    // Right Left Case
-    if (tree->balance < -1 && val < tree->right->data)
-    {
-        tree->right = rightRotate(tree->right);
-        return leftRotate(tree);
-    }
-
-    return tree;
 }
 
-void preorder_travesal(struct node *tree)
+void Red_Black_Tree::del_rbt_nodefix(node_of_the_red_black_tree *temp_node)
 {
-    if(tree != NULL)
+    node_of_the_red_black_tree *s;
+    while(temp_node!=root&&temp_node->color=='b')
     {
-        printf(" %d", tree->data);
-        preorder_travesal(tree->left);
-        preorder_travesal(tree->right);
+        if(temp_node->parent->left==temp_node)
+        {
+            s=temp_node->parent->right;
+            if(s->color=='r')
+            {
+                s->color='b';
+                temp_node->parent->color='r';
+                leftrotate_rbt_node(temp_node->parent);
+                s=temp_node->parent->right;
+            }
+            if(s->right->color=='b'&&s->left->color=='b')
+            {
+                s->color='r';
+                temp_node=temp_node->parent;
+            }
+            else
+            {
+                if(s->right->color=='b')
+                {
+                    s->left->color=='b';
+                    s->color='r';
+                    rightrotate_rbt_node(s);
+                    s=temp_node->parent->right;
+                }
+                s->color=temp_node->parent->color;
+                temp_node->parent->color='b';
+                s->right->color='b';
+                leftrotate_rbt_node(temp_node->parent);
+                temp_node=root;
+            }
+        }
+        else
+        {
+            s=temp_node->parent->left;
+            if(s->color=='r')
+            {
+                s->color='b';
+                temp_node->parent->color='r';
+                rightrotate_rbt_node(temp_node->parent);
+                s=temp_node->parent->left;
+            }
+            if(s->left->color=='b'&&s->right->color=='b')
+            {
+                s->color='r';
+                temp_node=temp_node->parent;
+            }
+            else
+            {
+                if(s->left->color=='b')
+                {
+                    s->right->color='b';
+                    s->color='r';
+                    leftrotate_rbt_node(s);
+                    s=temp_node->parent->left;
+                }
+                s->color=temp_node->parent->color;
+                temp_node->parent->color='b';
+                s->left->color='b';
+                rightrotate_rbt_node(temp_node->parent);
+                temp_node=root;
+            }
+        }
+        temp_node->color='b';
+        root->color='b';
     }
 }
 
-void inorder_traversal(struct node *tree)
+void Red_Black_Tree::leftrotate_rbt_node(node_of_the_red_black_tree *temp_node)
 {
-    if(tree != NULL)
+    if(temp_node->right==NULL)
+        return ;
+    else
     {
-        inorder_traversal(tree->left);
-        printf(" %d", tree->data);
-        inorder_traversal(tree->right);
+        node_of_the_red_black_tree *y=temp_node->right;
+        if(y->left!=NULL)
+        {
+            temp_node->right=y->left;
+            y->left->parent=temp_node;
+        }
+        else
+            temp_node->right=NULL;
+        if(temp_node->parent!=NULL)
+            y->parent=temp_node->parent;
+        if(temp_node->parent==NULL)
+            root=y;
+        else
+        {
+            if(temp_node==temp_node->parent->left)
+                temp_node->parent->left=y;
+            else
+                temp_node->parent->right=y;
+        }
+        y->left=temp_node;
+        temp_node->parent=y;
     }
 }
-
-void postorder_traversal(struct node *tree)
+void Red_Black_Tree::rightrotate_rbt_node(node_of_the_red_black_tree *temp_node)
 {
-    if(tree != NULL)
+    if(temp_node->left==NULL)
+        return ;
+    else
     {
-        postorder_traversal(tree->left);
-        postorder_traversal(tree->right);
-        printf(" %d", tree->data);
+        node_of_the_red_black_tree *y=temp_node->left;
+        if(y->right!=NULL)
+        {
+            temp_node->left=y->right;
+            y->right->parent=temp_node;
+        }
+        else
+            temp_node->left=NULL;
+        if(temp_node->parent!=NULL)
+            y->parent=temp_node->parent;
+        if(temp_node->parent==NULL)
+            root=y;
+        else
+        {
+            if(temp_node==temp_node->parent->left)
+                temp_node->parent->left=y;
+            else
+                temp_node->parent->right=y;
+        }
+        y->right=temp_node;
+        temp_node->parent=y;
     }
 }
 
+node_of_the_red_black_tree* Red_Black_Tree::successor(node_of_the_red_black_tree *temp_node)
+{
+    node_of_the_red_black_tree *y=NULL;
+    if(temp_node->left!=NULL)
+    {
+        y=temp_node->left;
+        while(y->right!=NULL)
+            y=y->right;
+    }
+    else
+    {
+        y=temp_node->right;
+        while(y->left!=NULL)
+            y=y->left;
+    }
+    return y;
+}
+
+void Red_Black_Tree::disp()
+{
+    display(root);
+}
+void Red_Black_Tree::display(node_of_the_red_black_tree *temp_node)
+{
+    if(root==NULL)
+    {
+        cout<<"\nEmpty Tree.";
+        return ;
+    }
+    if(temp_node!=NULL)
+    {
+        cout<<"\n\t node_of_the_red_black_tree: ";
+        cout<<"\n Key: "<<temp_node->key;
+        cout<<"\n Colour: ";
+        if(temp_node->color=='b')
+            cout<<"Black";
+        else
+            cout<<"Red";
+        if(temp_node->parent!=NULL)
+            cout<<"\n Parent: "<<temp_node->parent->key;
+        else
+            cout<<"\n no parent node_of_the_red_black_tree present ";
+        if(temp_node->right!=NULL)
+            cout<<"\n Right Child: "<<temp_node->right->key;
+        else
+            cout<<"\n no right child node_of_the_red_black_tree present. ";
+        if(temp_node->left!=NULL)
+            cout<<"\n Left Child: "<<temp_node->left->key;
+        else
+            cout<<"\n no left child node_of_the_red_black_tree present.  ";
+        cout<<endl;
+        if(temp_node->left)
+        {
+            cout<<"\n\nLeft:\n";
+            display(temp_node->left);
+        }
+        /*else
+         cout<<"\nNo Left Child.\n";*/ if(temp_node->right)
+        {
+            cout<<"\n\nRight:\n";
+            display(temp_node->right);
+        }
+        /*else
+         cout<<"\nNo Right Child.\n"*/
+    }
+}
+void Red_Black_Tree::search_rbt_node()
+{
+    if(root==NULL)
+    {
+        cout<<"\nEmpty Tree\n" ;
+        return  ;
+    }
+    int x;
+    cout<<"\n Enter key of the node_of_the_red_black_tree to be search_rbt_nodeed: ";
+    cin>>x;
+    node_of_the_red_black_tree *temp_node=root;
+    int found=0;
+    while(temp_node!=NULL&& found==0)
+    {
+        if(temp_node->key==x)
+            found=1;
+        if(found==0)
+        {
+            if(temp_node->key<x) temp_node=temp_node->right;
+            else
+                temp_node=temp_node->left;
+        }
+    }
+    if(found==0)
+        cout<<"\nElement Not Found.";
+    else
+    {
+        cout<<"\n\t FOUND node_of_the_red_black_tree: ";
+        cout<<"\n Key: "<<temp_node->key;
+        cout<<"\n Colour: ";
+        if(temp_node->color=='b')
+            cout<<"Black";
+        else
+            cout<<"Red";
+        if(temp_node->parent!=NULL)
+            cout<<"\n Parent: "<<temp_node->parent->key;
+        else
+            cout<<"\n no parent node_of_the_red_black_tree present";
+        if(temp_node->right!=NULL)
+            cout<<"\n Right Child: "<<temp_node->right->key;
+        else
+            cout<<"\n no right child node_of_the_red_black_tree present. ";
+        if(temp_node->left!=NULL)
+            cout<<"\n Left Child: "<<temp_node->left->key;
+        else
+            cout<<"\n no left child node_of_the_red_black_tree present";
+        cout<<endl;
+
+    }
+}
 int main()
 {
-    int option, val;
-    struct node *tree = NULL;
-
+    int ch,y=0;
+    Red_Black_Tree obj;
     do
     {
-        printf("\n ------MENU------");
-        printf("\n 1. Insert node");
-        printf("\n 2. Delete node");
-        printf("\n 3. Preorder traversal");
-        printf("\n 4. Inorder traversal");
-        printf("\n 5. Postorder traversal");
-        printf("\n 6. EXIT");
-        printf("\n\n Enter option: ");
-        scanf(" %d", &option);
-        switch(option)
+        cout<<"\nThe options list for Red Black Tree::" ;
+        cout<<"\n1. To add a new node_of_the_red_black_tree in the Red-Black Tree";
+        cout<<"\n2. To search_rbt_node the Red-Black Tree for a node_of_the_red_black_tree";
+        cout<<"\n3. To del_rbt_nodeete an existing Red-Black tree node_of_the_red_black_tree";
+        cout<<"\n4. To display all the node_of_the_red_black_trees of the Red-Black Tree ";
+        cout<<"\n5. To exit the code execution." ;
+        cout<<"\nInput: ";
+        cin>>ch;
+        switch(ch)
         {
-        case 1:
-            printf("\n Enter the data of the node: ");
-            scanf(" %d", &val);
-            tree = insert_node(tree, val);
+        case 1 :
+            obj.insert_a_node_to_rbt();
+            cout<<"\nNew node_of_the_red_black_tree added.\n";
             break;
-        case 2:
-            printf("\n Enter the node value to delete: ");
-            scanf(" %d", &val);
-            tree = delete_node(tree, val);
+        case 2 :
+            obj.search_rbt_node();
             break;
-        case 3:
-            if(tree == NULL)
-            {
-                printf("\n The tree is empty");
-            }
-            else
-            {
-                printf("\n Elements in preorder traversal: ");
-                preorder_travesal(tree);
-            }
-            break;
-        case 4:
-            if(tree == NULL)
-            {
-                printf("\n The tree is empty");
-            }
-            else
-            {
-                printf("\n Elements in inorder traversal: ");
-                inorder_traversal(tree);
-            }
-            break;
-        case 5:
-            if(tree == NULL)
-            {
-                printf("\n The tree is empty");
-            }
-            else
-            {
-                printf("\n Elements in postorder traversal: ");
-                postorder_traversal(tree);
-            }
-            break;
-        default:
-            option = 6;
-            break;
-        }
-    }
-    while(option != 6);
+        case 3 :
 
+            obj.del_rbt_node();
+            break;
+        case 4 :
+            obj.disp();
+            break;
+        case 5 :
+            y=1;
+            break;
+        default :
+            cout<<"\nEnter a Valid Choice.";
+        }
+        cout<<endl;
+
+    }
+    while(y!=1);
     return 0;
 }
